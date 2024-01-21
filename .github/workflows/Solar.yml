@@ -94,15 +94,9 @@ jobs:
             name: Code coverage result
             path: coverage 
 
-        - name: check output
-          if: ${{ steps.coverage.conclusion == 'success'}}
-          id: report
-          run: |
-              cat code-coverage-results.txt
-              echo "current_report=$(cat code-coverage-results.txt)" >> "$GITHUB_OUTPUT"
-              
-              
+         
         - name: modfied the report
+          if: ${{ steps.coverage.conclusion == 'success'}}
           id: badge
           run: |
             file=$(cat code-coverage-results.txt)
@@ -122,11 +116,10 @@ jobs:
           uses: mshick/add-pr-comment@v2
           with:
             message: |
-              **Badge** /n ${{ steps.badge.outputs.current_badge }}
-              ** Summary ** /n ${{ steps.report.outputs.current_report }}
+              **Status**  ${{ steps.badge.outputs.current_badge }}
                
-           # message-path: |
-            #  code-coverage-results.txt
+            message-path: |
+              code-coverage-results.txt
             message-failure: |
               Uh oh!
             
