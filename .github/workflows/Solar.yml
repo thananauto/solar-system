@@ -100,7 +100,12 @@ jobs:
           run: |
               cat code-coverage-results.txt
               echo "current_report=$(dcat code-coverage-results.txt)" >> "$GITHUB_OUTPUT"
-
+              
+              
+        - name: disp
+          run: |
+            echo ${{ steps.report.outputs.current_report }}
+            
         - name: Add comment
           if: always()
          
