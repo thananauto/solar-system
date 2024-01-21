@@ -102,16 +102,31 @@ jobs:
               echo "current_report=$(cat code-coverage-results.txt)" >> "$GITHUB_OUTPUT"
               
               
-       
+        - name: modfied the report
+          id: badge
+          run: |
+            file=$(cat code-coverage-results.txt)
+
+            for line in $file
+            do
+                newline='![Coverage Report]('$line')'
+                echo -E  $newline
+                echo "current_badge=$newline" >> "$GITHUB_OUTPUT"
+                break
+            done
+          shell: bash    
+
         - name: Add comment
           if: always()
          
           uses: mshick/add-pr-comment@v2
           with:
-            #message: |
-            #  **Howdie!** /n ${{ steps.report.outputs.current_report }}
-            message-path: |
-              code-coverage-results.txt
+            message: |
+              **Badge** /n ${{ steps.badge.outputs.current_badge }}
+              ** Summary ** /n ${{ steps.report.outputs.current_report }}
+               
+           # message-path: |
+            #  code-coverage-results.txt
             message-failure: |
               Uh oh!
             
