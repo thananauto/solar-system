@@ -12,9 +12,6 @@ on:
       - main
       - 'feature/*'
 
-permissions: 
-  contents: write
-  pull-requests: write
 
 env:
   MONGO_URI: ${{ vars.MONGO_URI }}
@@ -56,6 +53,10 @@ jobs:
 
 
     code-coverage:
+        permissions:
+          contents: write
+          pull-requests: write
+          repository-projects: write
         name: code coverage
         runs-on: ubuntu-latest
         steps:
