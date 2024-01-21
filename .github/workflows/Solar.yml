@@ -92,8 +92,9 @@ jobs:
             path: coverage 
 
 
-        - uses: mshick/add-pr-comment@v2
-         
+        - name: Add Coverage PR Comment
+          uses: marocchino/sticky-pull-request-comment@v2
+        
           with:
-            message-path: |
-              code-coverage-results.md
+            recreate: true
+            path: code-coverage-results.md
