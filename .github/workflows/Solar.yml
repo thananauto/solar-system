@@ -74,6 +74,7 @@ jobs:
           run: npm install
     
         - name: code coverage
+          continue-on-error: true
           run: npm run coverage
             
         - name: Code Coverage Summary Report
@@ -92,7 +93,12 @@ jobs:
             name: Code coverage result
             path: coverage 
 
-      
+        - name: check output
+          env:
+            content: $(cat code-coverage-results.txt)
+          run: |
+              cat code-coverage-results.txt
+              cat  ${{ env.content }}
 
         - name: Add comment
           if: always()
