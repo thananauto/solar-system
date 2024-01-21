@@ -2,6 +2,11 @@ name: Solar System Workflow
 
 on: 
   workflow_dispatch:
+  pull_request: 
+    types: [ opened ]
+    branches: 
+      - master
+
   push:
     branches:
       - main
@@ -16,13 +21,14 @@ env:
 
 jobs:
     unit-testing:
-        strategy:
-            matrix:
-              node-version: ['18', '19', '20']
-              os: [ubuntu-latest, windows-latest ]
+       # strategy:
+
+        #    matrix:
+        #     node-version: ['18', '19', '20']
+        #     os: [ubuntu-latest, windows-latest ]
 
         name: Unit Testing
-        runs-on: ${{ matrix.os }}
+        runs-on: ubuntu-latest
         steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
@@ -30,7 +36,7 @@ jobs:
         - name: Setup NodeJS Version
           uses: actions/setup-node@v3
           with:
-            node-version: ${{ matrix.node-version }}
+            node-version: 19
     
         - name: Install Dependencies
           run: npm install
@@ -43,3 +49,28 @@ jobs:
           with:
             name: Mocha-Test-Result
             path: test-results.xml
+
+
+    code-coverage:
+        name: code coverage
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
+        - name: Setup NodeJS Version
+          uses: actions/setup-node@v3
+          with:
+            node-version: 19
+    
+        - name: Install Dependencies
+          run: npm install
+    
+        - name: code coverage
+          run: npm run coverage
+          
+        - name: Archive Code Coverage Result
+          uses: actions/upload-artifact@v3
+          with:
+            name: Code coverage result
+            path: coverage           
