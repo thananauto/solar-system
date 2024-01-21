@@ -83,6 +83,7 @@ jobs:
             output: both  
             badge: true
             indicators: true
+            format: markdown
 
         - name: Archive Code Coverage Result
           if: always()
@@ -98,4 +99,4 @@ jobs:
           uses: marocchino/sticky-pull-request-comment@v2
           with:
             recreate: true
-            path: code-coverage-results.md
+            path: code-coverage-results.txt
