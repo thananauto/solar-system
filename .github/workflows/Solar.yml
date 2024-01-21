@@ -70,7 +70,14 @@ jobs:
           run: npm run coverage
           
         - name: Archive Code Coverage Result
+          if: always()
           uses: actions/upload-artifact@v3
           with:
             name: Code coverage result
-            path: coverage           
+            path: coverage 
+
+        - name: Upload result to PR
+          uses: 5monkeys/cobertura-action@master
+          with:
+            path: coverage/cobertura-coverage.xml
+            minimum_coverage: 75         
