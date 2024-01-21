@@ -74,6 +74,7 @@ jobs:
           run: npm install
     
         - name: code coverage
+          id: coverage
           continue-on-error: true
           run: npm run coverage
             
@@ -94,20 +95,19 @@ jobs:
             path: coverage 
 
         - name: check output
-          env:
-            content: $(cat code-coverage-results.txt)
+          if: ${{ steps.coverage.conclusion == 'success'}}
+          id: report
           run: |
               cat code-coverage-results.txt
-              cat  ${{ env.content }}
+              echo "current_report=$(dcat code-coverage-results.txt)" >> "$GITHUB_OUTPUT"
 
         - name: Add comment
           if: always()
-          env:
-            content: $(cat code-coverage-results.txt)
+         
           uses: mshick/add-pr-comment@v2
           with:
             message: |
-              **Howdie!** /n ${{ env.content }}
+              **Howdie!** /n ${{ steps.report.outputs.current_report }}
             message-failure: |
               Uh oh!
             
