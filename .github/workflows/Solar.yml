@@ -83,7 +83,7 @@ jobs:
             output: both  
             badge: true
             indicators: true
-            format: markdown
+           
 
         - name: Archive Code Coverage Result
           if: always()
