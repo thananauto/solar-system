@@ -102,17 +102,16 @@ jobs:
               echo "current_report=$(cat code-coverage-results.txt)" >> "$GITHUB_OUTPUT"
               
               
-        - name: disp
-          run: |
-            echo ${{ steps.report.outputs.current_report }}
-
+       
         - name: Add comment
           if: always()
          
           uses: mshick/add-pr-comment@v2
           with:
-            message: |
-              **Howdie!** /n ${{ steps.report.outputs.current_report }}
+            #message: |
+            #  **Howdie!** /n ${{ steps.report.outputs.current_report }}
+            message-path: |
+              code-coverage-results.txt
             message-failure: |
               Uh oh!
             
