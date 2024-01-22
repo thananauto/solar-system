@@ -41,7 +41,14 @@ jobs:
     
         - name: Install Dependencies
           run: npm install
-    
+         
+        - name: node cached
+          id: cache
+          uses: actions/cache@v4
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-${{ hashFiles('package-lock.json')}}
+            
         - name: Unit Testing
           run: npm test
           
@@ -69,7 +76,14 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: 19
-    
+
+        - name: node cached
+          id: cache
+          uses: actions/cache@v4
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-${{ hashFiles('package-lock.json')}}
+
         - name: Install Dependencies
           run: npm install
     
@@ -118,8 +132,7 @@ jobs:
             message: |
               **Status**  ${{ steps.badge.outputs.current_badge }}
                
-            message-path: |
-              code-coverage-results.txt
+           
             message-failure: |
-              Uh oh!
+              Workflow failed
             
