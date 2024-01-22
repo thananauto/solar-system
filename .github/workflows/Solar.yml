@@ -38,17 +38,17 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: 19
-
+    
+        - name: Install Dependencies
+          run: npm install
+         
         - name: node cached
           id: cache
           uses: actions/cache@v4
           with:
             path: node_modules
             key: ${{ runner.os }}-${{ hashFiles('package-lock.json')}}
-    
-        - name: Install Dependencies
-          run: npm install
-    
+            
         - name: Unit Testing
           run: npm test
           
@@ -84,11 +84,13 @@ jobs:
           with:
             path: node_modules
             key: ${{ runner.os }}-${{ hashFiles('package-lock.json')}}
-            
+
         - name: Install Dependencies
           run: npm install
     
         - name: code coverage
+          id: coverage
+          continue-on-error: true
           run: npm run coverage
             
         - name: Code Coverage Summary Report
@@ -98,6 +100,7 @@ jobs:
             output: both  
             badge: true
             indicators: true
+           
 
         - name: Archive Code Coverage Result
           if: always()
@@ -106,10 +109,31 @@ jobs:
             name: Code coverage result
             path: coverage 
 
+         
+        - name: modfied the report
+          if: ${{ steps.coverage.conclusion == 'success'}}
+          id: badge
+          run: |
+            file=$(cat code-coverage-results.txt)
 
-        - name: Add Coverage PR Comment
-          uses: marocchino/sticky-pull-request-comment@v2
-        
+            for line in $file
+            do
+                newline='![Coverage Report]('$line')'
+                echo -E  $newline
+                echo "current_badge=$newline" >> "$GITHUB_OUTPUT"
+                break
+            done
+          shell: bash    
+
+        - name: Add comment
+          if: always()
+         
+          uses: mshick/add-pr-comment@v2
           with:
-            recreate: true
-            path: code-coverage-results.md
+            message: |
+              **Status**  ${{ steps.badge.outputs.current_badge }}
+               
+           
+            message-failure: |
+              Workflow failed
+            
