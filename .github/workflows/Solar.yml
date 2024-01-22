@@ -38,6 +38,13 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: 19
+
+        - name: node cached
+          id: cache
+          uses: actions/cache@v4
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-${{ hashFiles('package-lock.json')}}
     
         - name: Install Dependencies
           run: npm install
@@ -57,6 +64,7 @@ jobs:
           contents: write
           pull-requests: write
           repository-projects: write
+
         name: code coverage
         runs-on: ubuntu-latest
         steps:
@@ -69,7 +77,14 @@ jobs:
           uses: actions/setup-node@v3
           with:
             node-version: 19
-    
+
+        - name: node cached
+          id: cache
+          uses: actions/cache@v4
+          with:
+            path: node_modules
+            key: ${{ runner.os }}-${{ hashFiles('package-lock.json')}}
+            
         - name: Install Dependencies
           run: npm install
     
