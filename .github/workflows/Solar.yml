@@ -169,5 +169,5 @@ jobs:
 
       - name: 'Build Inventory Image'
         run: |
-          docker build . --tag ghcr.io/${{ github.actor }}/${{ github.repository }}:${{ steps.meta.outputs.tags }}
-          docker push ghcr.io/${{ github.actor }}/${{ github.repository }}:${{ steps.meta.outputs.tags }}
+          docker build . --tag ghcr.io/${{ github.actor }}/${{ github.repository }}:v1.0
+          docker push ghcr.io/${{ github.actor }}/${{ github.repository }}:v1.0
