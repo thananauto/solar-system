@@ -3,10 +3,12 @@ on:
     workflow_dispatch: 
     push:
         branches: 
-          -  '*'
+          -  'main'
+          -  'feature/*'
     pull_request:
         branches:
-           - '*'  
+            -  'main'
+            -  'feature/*'  
 jobs:
     docker-meta:
         runs-on: ubuntu-latest
