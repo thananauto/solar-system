@@ -137,6 +137,7 @@ jobs:
             message-failure: |
               Workflow failed
     deploy:
+      permissions: write-all
       env: 
         image: ${{ github.repository }}
       needs: [code-coverage, unit-testing]
