@@ -160,7 +160,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.image }}
+          images: |
+               ${{ var.DOCKER_USER_NAME }}/solar-system
+               ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -181,32 +183,14 @@ jobs:
           username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
 
-      - name: Build  Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          tags: ${{ vars.DOCKER_USER_NAME }}/${{ steps.meta.outputs.tags }}
+     
 
-      - name: Test a Docker images
-        run: |
-            cat << EOF
-            docker images
-            docker run --name solar-system -d \
-            -e MONGO_URI=${{ env.MONGO_URI }} \
-            -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
-            -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
-            ${{ vars.DOCKER_USER_NAME }}/${{ steps.meta.outputs.tags }}
-            ip_addr=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system)
-            echo $ip_addr
-            if ! [ $(curl -s -o /dev/null -w '%{http_code}' http://$ip_addr:3000) == 200 ]; then exit 1 fi
-            EOF
-            
-      - name: Build and push Docker image
+    
+      - name: push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.ref_type == 'tag' }}
           tags: |
-              ${{ vars.DOCKER_USER_NAME }}/${{ steps.meta.outputs.tags }}
+              ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
