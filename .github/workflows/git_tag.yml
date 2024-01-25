@@ -1,0 +1,24 @@
+name: check git tag events, branched versions
+on:
+    push: 
+        branches: 
+            - main
+            - feature/*
+    pull_request: 
+        branches: 
+            - main
+            - feature/*
+jobs:
+    tags_refs:
+        runs-on: ubuntu-latest
+        steps:
+            - name: check the version
+              uses: actions/checkout@v4
+
+            - name: check the git tag version
+              run: |
+                    echo ${{ toJson(github) }}
+
+
+
+
