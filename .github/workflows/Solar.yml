@@ -161,7 +161,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-               ${{ var.DOCKER_USER_NAME }}/solar-system
+               ${{ vars.DOCKER_USER_NAME }}/solar-system
                ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
@@ -183,9 +183,6 @@ jobs:
           username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
 
-     
-
-    
       - name: push Docker image
         uses: docker/build-push-action@v5
         with:
