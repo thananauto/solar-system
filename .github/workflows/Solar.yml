@@ -143,8 +143,7 @@ jobs:
         packages: write
         contents: write
       if: ${{ 
-        github.event.base_ref =='refs/heads/main' && 
-        github.ref_type == 'tag' }}
+        github.event_name == 'push' || github.event_name == 'pull_request' }}
       env: 
         image: ${{ github.repository }}
       needs: [code-coverage, unit-testing]
@@ -173,9 +172,24 @@ jobs:
       - name: Login to Docker hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USER_NAME }}
+          username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
 
+      - name: Test a Docker images
+        run: |
+            cat << EOF
+            docker build -t ${{ env.image }}:latest .
+            docker images
+            docker run --name solar-system -d \
+            -e MONGO_URI=${{ env.MONGO_URI }} \
+            -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
+            -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
+            ${{ env.image }}:latest
+            ip_addr=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system)
+            echo $ip_addr
+            if ! [ $(curl -s -o /dev/null -w '%{http_code}' http://$ip_addr:3000) == 200 ]; then exit 1 fi
+            EOF
+            
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -183,5 +197,7 @@ jobs:
           push: ${{ 
             github.event.base_ref =='refs/heads/main' && 
             github.ref_type == 'tag' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+                 ${{ steps.meta.outputs.tags }}
+                 ${{ env.image }}:latest 
           labels: ${{ steps.meta.outputs.labels }}

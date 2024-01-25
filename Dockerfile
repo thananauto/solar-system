@@ -1,8 +1,8 @@
-FROM node:18-alpine3.17
+FROM node:20-alpine3.18
 
 WORKDIR /usr/app
 
-COPY package*.json /usr/app/
+COPY package.json /usr/app/
 
 RUN npm install
 
