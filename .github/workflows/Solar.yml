@@ -138,19 +138,14 @@ jobs:
            
             message-failure: |
               Workflow failed
-        - name: test
-          run: |
-            cat >> one.txt << EOF 
-            echo ${{ github.event.base_ref}}
-            echo ${{ github.ref_type }}
-            EOF
+        
     deploy:
       permissions: 
         packages: write
         contents: write
       
       env: 
-        image: ${{ github.repository }}
+        image: solar-system
       needs: [code-coverage, unit-testing]
       name: Deploy
       runs-on: ubuntu-latest
@@ -162,7 +157,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ env.image }}
+          images: ${{ env.image }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -199,10 +194,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ 
-            github.event.base_ref =='refs/heads/main' && 
-            github.ref_type == 'tag' }}
+          push: ${{ github.ref_type == 'tag' }}
           tags: |
                  ${{ steps.meta.outputs.tags }}
-                 ${{ env.image }}:latest 
+                 ${{ vars.DOCKER_USER_NAME }}/${{ env.image }}:latest 
           labels: ${{ steps.meta.outputs.labels }}
