@@ -182,20 +182,23 @@ jobs:
         with:
           username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
+
       - name: Test a Docker images
+        if: ${{ github.ref_type == 'tag' }}
         run: |
-       
+            version = $(echo ${{ github.ref_name }}  | tr -d v)
             docker run --name solar-system -d \
             -e MONGO_URI=${{ env.MONGO_URI }} \
             -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
             -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
-            ${{ vars.DOCKER_USER_NAME }}/solar-system:${{ github.sha }}
+            ${{ vars.DOCKER_USER_NAME }}/solar-system:$version
            
       - name: push Docker image
+        if: ${{ github.ref_type == 'tag' }}
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.ref_type == 'tag' }}
+          push: true
           tags: |
               ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
