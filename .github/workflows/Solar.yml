@@ -185,9 +185,8 @@ jobs:
             -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
             ${{ env.image }}:latest
 
-            //get the ip address of running container
             ip_addr=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system)
-            //check the container status
+           
             if ! [ $(curl -s -o /dev/null -w '%{http_code}' http://$ip_addr:3000) == 200 ]; then \
                exit 1 \
             fi
