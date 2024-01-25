@@ -138,6 +138,11 @@ jobs:
            
             message-failure: |
               Workflow failed
+        - name: test
+          run: |
+            cat >> one.txt << EOF ${{ github.event.base_ref}}
+            echo ${{ github.ref_type }}
+            EOF
     deploy:
       permissions: 
         packages: write
