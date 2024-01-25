@@ -182,7 +182,15 @@ jobs:
         with:
           username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
-
+      - name: Test a Docker images
+        run: |
+       
+            docker run --name solar-system -d \
+            -e MONGO_URI=${{ env.MONGO_URI }} \
+            -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
+            -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
+            ${{ vars.DOCKER_USER_NAME }}/solar-system
+           
       - name: push Docker image
         uses: docker/build-push-action@v5
         with:
