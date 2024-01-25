@@ -179,14 +179,14 @@ jobs:
         run: |
             docker build -t ${{ env.image }}:latest .
             docker images
-            docker build --name solar-system -d \
+            docker run --name solar-system -d \
             -e MONGO_URI=${{ env.MONGO_URI }} \
             -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
             -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
             ${{ env.image }}:latest
 
             //get the ip address of running container
-            ip_addr=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar)
+            ip_addr=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system)
             //check the container status
             if ! [ $(curl -s -o /dev/null -w '%{http_code}' http://$ip_addr:3000) == 200 ]; then \
                exit 1 \
@@ -200,5 +200,7 @@ jobs:
           push: ${{ 
             github.event.base_ref =='refs/heads/main' && 
             github.ref_type == 'tag' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+                 ${{ steps.meta.outputs.tags }}
+                 ${{ env.image }}:latest 
           labels: ${{ steps.meta.outputs.labels }}
