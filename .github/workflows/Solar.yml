@@ -177,6 +177,7 @@ jobs:
 
       - name: Test a Docker images
         run: |
+            cat << EOF
             docker build -t ${{ env.image }}:latest .
             docker images
             docker run --name solar-system -d \
@@ -187,9 +188,8 @@ jobs:
             ip_addr=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system)
             echo $ip_addr
             if ! [ $(curl -s -o /dev/null -w '%{http_code}' http://$ip_addr:3000) == 200 ]; then exit 1 fi
+            EOF
             
-             
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
