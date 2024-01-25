@@ -140,15 +140,15 @@ jobs:
               Workflow failed
         - name: test
           run: |
-            cat >> one.txt << EOF ${{ github.event.base_ref}}
+            cat >> one.txt << EOF 
+            echo ${{ github.event.base_ref}}
             echo ${{ github.ref_type }}
             EOF
     deploy:
       permissions: 
         packages: write
         contents: write
-      if: ${{ 
-        github.event_name == 'push' || github.event_name == 'pull_request' }}
+      
       env: 
         image: ${{ github.repository }}
       needs: [code-coverage, unit-testing]
