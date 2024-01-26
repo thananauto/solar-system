@@ -31,7 +31,7 @@ jobs:
         #     os: [ubuntu-latest, windows-latest ]
         services:
           mongo-nonprod:
-            image: iddharth67/mongo-db:non-prod
+            image: siddharth67/mongo-db:non-prod
             port:
               - 27017:27017
 
