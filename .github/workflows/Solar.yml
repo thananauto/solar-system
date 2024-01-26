@@ -24,6 +24,7 @@ env:
 
 jobs:
     unit-testing:
+        if: ${{ github.ref_type == 'tag' }}
        # strategy:
 
         #    matrix:
@@ -71,6 +72,7 @@ jobs:
 
 
     code-coverage:
+        if: ${{ github.ref_type == 'tag' }}
         permissions:
           contents: write
           pull-requests: write
@@ -225,3 +227,23 @@ jobs:
           tags: |
               ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+    
+    dev-deployment:
+      name: Deploy to dev environment
+      runs-on: ubuntu-latest
+      steps:
+        - name: Install kubectl 
+          uses: azure/setup-kubectl@v3
+          with:
+            version: 'v1.26.0'
+
+        - name: set the kubeconfig files
+          uses: azure/k8s-set-context@v3
+          with:
+            method: kubeconfig
+            kubeconfig: ${{ secrets.KUBECONFIG }}
+
+        - name: get kubernetes cluster details
+          run: |
+            kubectl version --short
+            kubectl get nodes
