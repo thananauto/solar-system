@@ -29,6 +29,11 @@ jobs:
         #    matrix:
         #     node-version: ['18', '19', '20']
         #     os: [ubuntu-latest, windows-latest ]
+        services:
+          mongo-nonprod:
+            image: iddharth67/mongo-db:non-prod
+            port:
+              - 27017:27017
 
         name: Unit Testing
         runs-on: ubuntu-latest
@@ -53,6 +58,10 @@ jobs:
             
         - name: Unit Testing
           run: npm test
+          env:
+            MONGO_URI: "mongodb://mongo-nonprod;27017/superData"
+            MONGO_USERNAME: non-prod-user
+            MONGO_PASSWORD: non-prod-password 
           
         - name: Archive Test Result
           uses: actions/upload-artifact@v3
@@ -140,6 +149,7 @@ jobs:
               Workflow failed
         
     deploy:
+      if: ${{ github.ref_type == 'tag' && github.event == 'push'}}
       permissions: 
         packages: write
         contents: write
@@ -182,15 +192,6 @@ jobs:
         with:
           username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
-
-      - name: Build Docker image
-        if: ${{ github.ref_type == 'tag' }}
-        uses: docker/build-push-action@v5
-        with:
-            context: .
-            push: false
-            tags: |
-                ${{ steps.meta.outputs.tags }}
                 
       - name: Test a Docker images
         if: ${{ github.ref_type == 'tag' }}
