@@ -195,8 +195,9 @@ jobs:
       - name: Test a Docker images
         if: ${{ github.ref_type == 'tag' }}
         run: |
-            docker images
             export version=$(echo ${{ github.ref_name }}  | tr -d v)
+            docker build -t ${{ vars.DOCKER_USER_NAME }}/solar-system:$version .
+            docker images
             docker run --name solar-system -d \
             -e MONGO_URI=${{ env.MONGO_URI }} \
             -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
