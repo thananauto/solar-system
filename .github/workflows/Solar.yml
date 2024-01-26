@@ -59,7 +59,7 @@ jobs:
         - name: Unit Testing
           run: npm test
           env:
-            MONGO_URI: "mongodb://mongo-nonprod;27017/superData"
+            MONGO_URI: "mongodb://mongo-nonprod:27017/superData"
             MONGO_USERNAME: non-prod-user
             MONGO_PASSWORD: non-prod-password 
           
