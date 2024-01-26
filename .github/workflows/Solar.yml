@@ -32,7 +32,7 @@ jobs:
         services:
           mongo-nonprod:
             image: siddharth67/mongo-db:non-prod
-            port:
+            ports:
               - 27017:27017
 
         name: Unit Testing
