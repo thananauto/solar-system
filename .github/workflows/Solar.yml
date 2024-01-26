@@ -29,6 +29,11 @@ jobs:
         #    matrix:
         #     node-version: ['18', '19', '20']
         #     os: [ubuntu-latest, windows-latest ]
+        services:
+          mongo-nonprod:
+            image: siddharth67/mongo-db:non-prod
+            port:
+              - 27017:27017
 
         name: Unit Testing
         runs-on: ubuntu-latest
@@ -53,6 +58,10 @@ jobs:
             
         - name: Unit Testing
           run: npm test
+          env:
+            MONGO_URI: "mongodb://mongo-nonprod;27017/superData"
+            MONGO_USERNAME: non-prod-user
+            MONGO_PASSWORD: non-prod-password 
           
         - name: Archive Test Result
           uses: actions/upload-artifact@v3
@@ -140,13 +149,14 @@ jobs:
               Workflow failed
         
     deploy:
+      if: ${{ github.ref_type == 'tag' && github.event == 'push'}}
       permissions: 
         packages: write
         contents: write
       
       env: 
         image: solar-system
-     # needs: [code-coverage, unit-testing]
+      needs: [code-coverage, unit-testing]
       name: Deploy
       runs-on: ubuntu-latest
       steps:
@@ -182,20 +192,25 @@ jobs:
         with:
           username: ${{ vars.DOCKER_USER_NAME }}
           password: ${{ secrets.DOCKER_PWD }}
+                
       - name: Test a Docker images
+        if: ${{ github.ref_type == 'tag' }}
         run: |
-       
+            export version=$(echo ${{ github.ref_name }}  | tr -d v)
+            docker build -t ${{ vars.DOCKER_USER_NAME }}/solar-system:$version .
+            docker images
             docker run --name solar-system -d \
             -e MONGO_URI=${{ env.MONGO_URI }} \
             -e MONGO_USERNAME=${{ env.MONGO_USERNAME }} \
             -e MONGO_PASSWORD=${{ env.MONGO_PASSWORD }} \
-            ${{ vars.DOCKER_USER_NAME }}/solar-system:${{ github.sha }}
+            ${{ vars.DOCKER_USER_NAME }}/solar-system:$version
            
       - name: push Docker image
+        if: ${{ github.ref_type == 'tag' }}
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.ref_type == 'tag' }}
+          push: true
           tags: |
               ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
