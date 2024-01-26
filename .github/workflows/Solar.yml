@@ -78,16 +78,23 @@ jobs:
 
         name: code coverage
         runs-on: ubuntu-latest
-        steps:
-       
+        services:
+          mongo-nonprod:
+            image: siddharth67/mongo-db:non-prod
+            options: 
+              --name mongo-db
+        
+        container: 
+          image: node-18
 
+        steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version
-          uses: actions/setup-node@v3
-          with:
-            node-version: 19
+      #  - name: Setup NodeJS Version
+      #    uses: actions/setup-node@v3
+      #    with:
+      #      node-version: 19
 
         - name: node cached
           id: cache
@@ -103,6 +110,10 @@ jobs:
           id: coverage
           continue-on-error: true
           run: npm run coverage
+          env:
+            MONGO_URI: "mongodb://localhost:27017/superData"
+            MONGO_USERNAME: non-prod-user
+            MONGO_PASSWORD: non-prod-password 
             
         - name: Code Coverage Summary Report
           uses: irongut/CodeCoverageSummary@v1.3.0
