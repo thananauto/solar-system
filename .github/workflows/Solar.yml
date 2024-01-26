@@ -156,7 +156,7 @@ jobs:
       
       env: 
         image: solar-system
-     # needs: [code-coverage, unit-testing]
+      needs: [code-coverage, unit-testing]
       name: Deploy
       runs-on: ubuntu-latest
       steps:
