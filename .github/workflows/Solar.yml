@@ -254,4 +254,5 @@ jobs:
         - name: get kubernetes cluster details
           run: |
             kubectl version
+            kubectl get all
             kubectl get nodes
