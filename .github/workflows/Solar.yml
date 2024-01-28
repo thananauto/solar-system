@@ -244,7 +244,7 @@ jobs:
             kubeconfig: ${{ secrets.KUBECONFIG }}
           
         - name: install the gcloud cli
-          uses: google-github-actions/setup-gcloud@v0
+          uses: google-github-actions/setup-gcloud@v2
           with:
             project_id: solar-system
             service_account_key: ${{ secrets.GOOGLE_APP_SECRET }}
