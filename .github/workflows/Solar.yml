@@ -277,7 +277,7 @@ jobs:
               REPLICAS: ${{ vars.REPLICAS }}
         - name: set mongo-db details
           run: |
-                kubectl -n ${{ vars.NAMESPACE }}create secret generic mongo-db-creds \
+                kubectl create secret generic mongo-db-creds -n ${{ vars.NAMESPACE }} \
                 --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
                 --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
                 --from-literal=MONGO_PASSWORD= ${{ secrets.MONGO_PASSWORD }} \
