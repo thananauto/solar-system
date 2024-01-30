@@ -277,5 +277,5 @@ jobs:
               REPLICAS: ${{ vars.REPLICAS }}
         - name: Display the orginal file
           run: |
-            cat kubernetes/dev
+            cat kubernetes/dev/deployment_solar_system.yml
               
