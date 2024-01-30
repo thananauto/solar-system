@@ -263,3 +263,19 @@ jobs:
             kubectl version
             kubectl get all
             kubectl get nodes
+
+        - name: replace token values 
+          uses: cschleiden/replace-tokens@v1
+          with:
+              tokenPrefix: '_[_'
+              tokenSuffix: '_]_'
+              files: '["kubernetes/dev/*.yml"]'
+
+          env:
+              NAMESPACE: ${{ vars.NAMESPACE }}
+              IMAGE: ${{ vars.DOCKER_USER_NAME }}/solar-system:latest
+              REPLICAS: ${{ vars.REPLICAS }}
+        - name: Display the orginal file
+          run: |
+            cat kubernetes/dev
+              

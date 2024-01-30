@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-system-deployment
+  labels:
+    app: solar-system
+  namespace: _[_NAMESPACE_]_
+spec:
+  replicas: _[_REPLICAS_]_
+  selector:
+    matchLabels:
+     app: solar-system
+  template:
+    metadata:
+      labels:
+        app: solar-system
+    spec:
+      containers:
+        - name: solar-system
+          imagePullPolicy: Always
+
+          image: _[_IMAGE_NAME_]_
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+              name: http
+
+          envFrom:
+            - secretRef:
+                name: mongo-db-creds
+      imagePullSecrets:
+        - name: docker-secret
+
