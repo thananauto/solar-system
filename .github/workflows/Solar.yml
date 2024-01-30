@@ -280,7 +280,10 @@ jobs:
                 kubectl create secret generic mongo-db-creds \
                 --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
                 --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
-                --from-literal=MONGO_PASSWORD= ${{ secrets.MONGO_PASSWORD }} 
+                --from-literal=MONGO_PASSWORD= ${{ secrets.MONGO_PASSWORD }} \
+                --save-config \
+                --dry-run=client \
+                -o yaml | kubectl apply -f .
                
 
         - name: Deploy to dev environment
