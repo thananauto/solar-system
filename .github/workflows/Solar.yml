@@ -275,7 +275,15 @@ jobs:
               NAMESPACE: ${{ vars.NAMESPACE }}
               IMAGE: ${{ vars.DOCKER_USER_NAME }}/solar-system:latest
               REPLICAS: ${{ vars.REPLICAS }}
-        - name: Display the orginal file
+        - name: set mongo-db details
           run: |
-            cat kubernetes/dev/deployment_solar_system.yml
+                kubectl create secret generic mongo-db-creds \
+                --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
+                --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
+                --from-literal=MONGO_PASSWORD= ${{ secrets.MONGO_PASSWORD }} 
+               
+
+        - name: Deploy to dev environment
+          run: |
+              kubectl apply -f kubernetes/dev -n ${{ vars.NAMESPACE }}
               
