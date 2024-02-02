@@ -4,7 +4,7 @@ metadata:
   name: solar-system-service
   labels:
     app: solar-system
-  namespace: dev
+  namespace: _[_NAMESPACE_]_
   annotations:
     cloud.google.com/neg: '{"ingress": true}'
     beta.cloud.google.com/backend-config: '{"default": "solar-system-test"}'
