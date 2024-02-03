@@ -296,7 +296,7 @@ jobs:
         - name: Get Ingress Ip address
           id: ip-addr
           run: |
-                echo "IP_ADDRESS=$(kubectl get ingress -n ${{ vars.NAMESPACE }} -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}")" >> "$GITHUB_ENV"
+                echo "IP_ADDRESS=$(kubectl get ingress -n ${{ vars.NAMESPACE }} -o jsonpath="{.items[0].status.loadBalancer.ingress[0].ip}")" >> "$GITHUB_OUTPUT"
     
     integration-test:
       runs-on: ubuntu-latest
