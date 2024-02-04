@@ -376,9 +376,9 @@ jobs:
 
                 
 
-        - name: Deploy to dev environment
+        - name: Deploy to prod environment
           run: |
-              kubectl apply -f kubernetes/dev -n ${{ vars.NAMESPACE }}
+              kubectl apply -f kubernetes/prod -n ${{ vars.NAMESPACE }}
 
         - name: Get Ingress Ip address
           id: ip-addr
