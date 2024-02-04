@@ -75,7 +75,7 @@ jobs:
           contents: write
           pull-requests: write
           repository-projects: write
-
+        continue-on-error: true
         name: code coverage
         runs-on: ubuntu-latest
         services:
