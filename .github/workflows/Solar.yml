@@ -281,12 +281,21 @@ jobs:
               IMAGE: ${{ vars.DOCKER_USER_NAME }}/solar-system:latest
               REPLICAS: ${{ vars.REPLICAS }}
 
-        - name: set mongo-db details
+        - name: set mongo-db details and docker secrets
           run: |
                 kubectl create secret generic mongo-db-creds -n ${{ vars.NAMESPACE }} \
                 --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
                 --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
                 --from-literal=MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }} \
+                --save-config \
+                --dry-run=client \
+                -o yaml | kubectl apply -f -
+
+                kubectl create secret docker-registry docker-secret -n ${{ vars.NAMESPACE }} \
+                --docker-email=thananjayan1988@gmail.com \
+                --docker-username=${{ vars.DOCKER_USER_NAME }} \
+                --docker-password=${{ secrets.DOCKER_PWD }} \
+                --docker-server=https://index.docker.io/v1/ \
                 --save-config \
                 --dry-run=client \
                 -o yaml | kubectl apply -f -
@@ -358,7 +367,7 @@ jobs:
               IMAGE: ${{ vars.DOCKER_USER_NAME }}/solar-system:latest
               REPLICAS: ${{ vars.REPLICAS }}
 
-        - name: set mongo-db details
+        - name: set mongo-db details and docker secret
           run: |
                 kubectl create secret generic mongo-db-creds -n ${{ vars.NAMESPACE }} \
                 --from-literal=MONGO_URI=${{ vars.MONGO_URI }} \
@@ -372,7 +381,10 @@ jobs:
                 --docker-email=thananjayan1988@gmail.com \
                 --docker-username=${{ vars.DOCKER_USER_NAME }} \
                 --docker-password=${{ secrets.DOCKER_PWD }} \
-                --docker-server=https://index.docker.io/v1/
+                --docker-server=https://index.docker.io/v1/ \
+                --save-config \
+                --dry-run=client \
+                -o yaml | kubectl apply -f -
 
                 
 
