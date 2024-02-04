@@ -24,7 +24,6 @@ env:
 
 jobs:
     unit-testing:
-        if: ${{ github.ref_type == 'tag' }}
        # strategy:
 
         #    matrix:
@@ -72,7 +71,6 @@ jobs:
 
 
     code-coverage:
-        if: ${{ github.ref_type == 'tag' }}
         permissions:
           contents: write
           pull-requests: write
@@ -160,9 +158,9 @@ jobs:
            
             message-failure: |
               Workflow failed
-        
+
+    
     deploy:
-      if: ${{ github.ref_type == 'tag' && github.event == 'push'}}
       permissions: 
         packages: write
         contents: write
@@ -229,6 +227,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
     
     dev-deployment:
+      needs: deploy
       name: Deploy to dev environment
       runs-on: ubuntu-latest
       environment: 
@@ -261,13 +260,7 @@ jobs:
           with:
             project_id: solar-system
             install_components: 'gke-gcloud-auth-plugin'
-           
-
-        - name: get kubernetes cluster details
-          run: |
-            kubectl version
-            kubectl get all
-            kubectl get nodes
+      
 
         - name: replace token values 
           uses: cschleiden/replace-tokens@v1
